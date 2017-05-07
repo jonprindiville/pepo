@@ -83,20 +83,67 @@ subscriptions model =
 -- View
 
 
-controlBlockAttrs : Attribute msg
-controlBlockAttrs =
+controlBlockStyle : Attribute msg
+controlBlockStyle =
     style
         [ ( "float", "left" )
         , ( "min-width", "3em" )
         ]
 
 
-positionAttrs : Attribute msg
-positionAttrs =
-    style
-        [ ( "text-align", "center" )
-        , ( "vertical-align", "center" )
-        , ( "font-size", "10em" )
+renderControls : Model -> Html Msg
+renderControls model =
+    div
+        [ style
+            [ ( "background-color", "gray" )
+            , ( "color", "white" )
+            , ( "height", "2em" )
+            ]
+        ]
+        [ div
+            [ controlBlockStyle ]
+            [ button [ onClick Toggle ]
+                [ text
+                    (if (model.active == True) then
+                        "Stop"
+                     else
+                        "Start"
+                    )
+                ]
+            ]
+        , div
+            [ controlBlockStyle ]
+            [ input
+                [ type_ "range"
+                , Html.Attributes.min "0"
+                , Html.Attributes.max "10"
+                , value (toString model.interval)
+                , step "0.1"
+                , onInput AdjustInterval
+                ]
+                []
+            , text (toString model.interval ++ " seconds")
+            ]
+        ]
+
+
+renderPositions : Model -> Html Msg
+renderPositions model =
+    div
+        [ style
+            [ ( "text-align", "center" )
+            , ( "vertical-align", "center" )
+            , ( "font-size", "10em" )
+            ]
+        ]
+        [ text
+            (case ( model.active, model.position ) of
+                ( True, pos ) ->
+                    toString pos
+
+                ( False, _ ) ->
+                    ""
+            )
         ]
 
 
@@ -104,47 +151,6 @@ view : Model -> Html Msg
 view model =
     div
         []
-        [ div
-            [ style
-                [ ( "background-color", "gray" )
-                , ( "color", "white" )
-                , ( "height", "2em" )
-                ]
-            ]
-            [ div
-                [ controlBlockAttrs ]
-                [ button [ onClick Toggle ]
-                    [ text
-                        (if (model.active == True) then
-                            "Stop"
-                         else
-                            "Start"
-                        )
-                    ]
-                ]
-            , div
-                [ controlBlockAttrs ]
-                [ input
-                    [ type_ "range"
-                    , Html.Attributes.min "0"
-                    , Html.Attributes.max "10"
-                    , value (toString model.interval)
-                    , step "0.1"
-                    , onInput AdjustInterval
-                    ]
-                    []
-                , text (toString model.interval ++ " seconds")
-                ]
-            ]
-        , div
-            [ positionAttrs ]
-            [ text
-                (case ( model.active, model.position ) of
-                    ( True, pos ) ->
-                        toString pos
-
-                    ( False, _ ) ->
-                        ""
-                )
-            ]
+        [ renderControls model
+        , renderPositions model
         ]
