@@ -160,18 +160,23 @@ renderIntervalControl model =
             , ( "text-align", "center" )
             ]
         ]
-        [ input
-            [ Html.Attributes.type_ "range"
-            , Html.Attributes.min "0.1"
-            , Html.Attributes.max "10"
-            , value (toString model.interval)
-            , step "0.1"
-            , onInput AdjustInterval
-            , Html.Attributes.style [ ( "width", "15vw" ) ]
-            ]
+        ((if model.active then
             []
-        , Html.text (toString model.interval ++ "s per position")
-        ]
+          else
+            [ input
+                [ Html.Attributes.type_ "range"
+                , Html.Attributes.min "0.1"
+                , Html.Attributes.max "10"
+                , value (toString model.interval)
+                , step "0.1"
+                , onInput AdjustInterval
+                , Html.Attributes.style [ ( "width", "15vw" ) ]
+                ]
+                []
+            ]
+         )
+            ++ [ Html.text (toString model.interval ++ "s per position") ]
+        )
 
 
 renderTimeLimitControl : Model -> Html Msg
