@@ -116,10 +116,15 @@ renderToggleControl model =
 renderIntervalControl : Model -> Html Msg
 renderIntervalControl model =
     div
-        [ controlStyle ]
+        [ controlStyle
+        , style
+            [ ( "width", "25vw" )
+            , ( "text-align", "center" )
+            ]
+        ]
         [ input
             [ type_ "range"
-            , Html.Attributes.min "0"
+            , Html.Attributes.min "0.1"
             , Html.Attributes.max "10"
             , value (toString model.interval)
             , step "0.1"
@@ -127,7 +132,7 @@ renderIntervalControl model =
             , style [ ( "width", "25vw" ) ]
             ]
             []
-        , text (toString model.interval ++ " seconds")
+        , text (toString model.interval ++ "s per position")
         ]
 
 
@@ -137,7 +142,7 @@ renderControls model =
         [ style
             [ ( "background-color", "gray" )
             , ( "color", "white" )
-            , ( "height", "4em" )
+            , ( "height", "10vh" )
             , ( "display", "flex" )
             , ( "flex-direction", "row" )
             , ( "justify-content", "space-around" )
@@ -154,9 +159,9 @@ renderPositions : Model -> Html Msg
 renderPositions model =
     div
         [ style
-            [ ( "height", "100%" )
+            [ ( "height", "90vh" )
             , ( "text-align", "center" )
-            , ( "font-size", "10em" )
+            , ( "font-size", "20vw" )
             , ( "display", "flex" )
             , ( "flex-direction", "column" )
             , ( "justify-content", "center" )
@@ -179,7 +184,11 @@ renderPositions model =
 view : Model -> Html Msg
 view model =
     div
-        [ style [ ( "height", "100%" ) ] ]
+        [ style
+            [ ( "height", "100%" )
+            , ( "font-family", "sans-serif" )
+            ]
+        ]
         [ renderControls model
         , renderPositions model
         ]
