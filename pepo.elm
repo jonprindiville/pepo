@@ -88,11 +88,46 @@ subscriptions model =
 -- View
 
 
-controlBlockStyle : Attribute msg
-controlBlockStyle =
-    style
-        [ ( "float", "left" )
-        , ( "min-width", "3em" )
+flexboxSpacer : String -> Html Msg
+flexboxSpacer cssWidth =
+    div [ style [ ( "width", cssWidth ) ] ] []
+
+
+controlStyle : Attribute msg
+controlStyle =
+    style [ ( "margin", "0.5em" ) ]
+
+
+renderToggleControl : Model -> Html Msg
+renderToggleControl model =
+    div
+        [ controlStyle ]
+        [ button [ onClick Toggle ]
+            [ text
+                (if (model.active == True) then
+                    "Stop"
+                 else
+                    "Start"
+                )
+            ]
+        ]
+
+
+renderIntervalControl : Model -> Html Msg
+renderIntervalControl model =
+    div
+        [ controlStyle ]
+        [ input
+            [ type_ "range"
+            , Html.Attributes.min "0"
+            , Html.Attributes.max "10"
+            , value (toString model.interval)
+            , step "0.1"
+            , onInput AdjustInterval
+            , style [ ( "width", "25vw" ) ]
+            ]
+            []
+        , text (toString model.interval ++ " seconds")
         ]
 
 
@@ -102,33 +137,16 @@ renderControls model =
         [ style
             [ ( "background-color", "gray" )
             , ( "color", "white" )
-            , ( "height", "2em" )
+            , ( "height", "4em" )
+            , ( "display", "flex" )
+            , ( "flex-direction", "row" )
+            , ( "justify-content", "space-around" )
+            , ( "align-items", "center" )
             ]
         ]
-        [ div
-            [ controlBlockStyle ]
-            [ button [ onClick Toggle ]
-                [ text
-                    (if (model.active == True) then
-                        "Stop"
-                     else
-                        "Start"
-                    )
-                ]
-            ]
-        , div
-            [ controlBlockStyle ]
-            [ input
-                [ type_ "range"
-                , Html.Attributes.min "0"
-                , Html.Attributes.max "10"
-                , value (toString model.interval)
-                , step "0.1"
-                , onInput AdjustInterval
-                ]
-                []
-            , text (toString model.interval ++ " seconds")
-            ]
+        [ renderToggleControl model
+        , flexboxSpacer "30%"
+        , renderIntervalControl model
         ]
 
 
@@ -136,26 +154,32 @@ renderPositions : Model -> Html Msg
 renderPositions model =
     div
         [ style
-            [ ( "text-align", "center" )
-            , ( "vertical-align", "center" )
+            [ ( "height", "100%" )
+            , ( "text-align", "center" )
             , ( "font-size", "10em" )
+            , ( "display", "flex" )
+            , ( "flex-direction", "column" )
+            , ( "justify-content", "center" )
             ]
         ]
-        [ text
-            (case ( model.active, model.position ) of
-                ( True, pos ) ->
-                    toString pos
+        [ div
+            []
+            [ text
+                (case ( model.active, model.position ) of
+                    ( True, pos ) ->
+                        toString pos
 
-                ( False, _ ) ->
-                    ""
-            )
+                    ( False, _ ) ->
+                        ""
+                )
+            ]
         ]
 
 
 view : Model -> Html Msg
 view model =
     div
-        []
+        [ style [ ( "height", "100%" ) ] ]
         [ renderControls model
         , renderPositions model
         ]
