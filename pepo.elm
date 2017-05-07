@@ -137,7 +137,10 @@ renderToggleControl : Model -> Html Msg
 renderToggleControl model =
     div
         [ controlStyle ]
-        [ button [ onClick Toggle ]
+        [ button
+            [ onClick Toggle
+            , Html.Attributes.style [ ( "font-size", "1em" ) ]
+            ]
             [ Html.text
                 (if (model.active == True) then
                     "Stop"
@@ -224,6 +227,7 @@ renderControls model =
         [ Html.Attributes.style
             [ ( "background-color", "gray" )
             , ( "color", "white" )
+            , ( "font-size", "1.25em" )
             , ( "height", "10vh" )
             , ( "display", "flex" )
             , ( "flex-direction", "row" )
