@@ -51,20 +51,17 @@ init =
 
 
 type Msg
-    = Toggle
-    | AdjustInterval String
+    = AdjustInterval String
     | AdjustTimeLimit String
+    | NewPosition Int
     | Tick Time
     | TimeLimitReached Time
-    | NewPosition Int
+    | Toggle
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Toggle ->
-            ( { model | active = not model.active }, newPositionCmd )
-
         AdjustInterval stringVal ->
             case String.toFloat stringVal of
                 Ok value ->
@@ -81,17 +78,20 @@ update msg model =
                 Err errMsg ->
                     ( model, Cmd.none )
 
+        NewPosition pos ->
+            ( { model | position = pos }, Cmd.none )
+
         Tick _ ->
             if model.active then
                 ( model, newPositionCmd )
             else
                 ( model, Cmd.none )
 
-        NewPosition pos ->
-            ( { model | position = pos }, Cmd.none )
-
         TimeLimitReached _ ->
             ( { model | active = False }, Cmd.none )
+
+        Toggle ->
+            ( { model | active = not model.active }, newPositionCmd )
 
 
 
