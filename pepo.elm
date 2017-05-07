@@ -27,6 +27,11 @@ type alias Model =
     }
 
 
+newPositionCmd : Cmd Msg
+newPositionCmd =
+    Random.generate NewPosition (Random.int 0 5)
+
+
 init : ( Model, Cmd Msg )
 init =
     ( { position = 0, interval = 5.0, active = False }, Cmd.none )
@@ -47,7 +52,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Toggle ->
-            ( { model | active = not model.active }, Cmd.none )
+            ( { model | active = not model.active }, newPositionCmd )
 
         AdjustInterval stringVal ->
             case String.toFloat stringVal of
@@ -59,7 +64,7 @@ update msg model =
 
         Tick time ->
             if model.active then
-                ( model, Random.generate NewPosition (Random.int 0 5) )
+                ( model, newPositionCmd )
             else
                 ( model, Cmd.none )
 
