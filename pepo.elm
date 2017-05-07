@@ -30,11 +30,6 @@ type alias Model =
     }
 
 
-newPositionCmd : Cmd Msg
-newPositionCmd =
-    Random.generate NewPosition (Random.int 0 5)
-
-
 init : ( Model, Cmd Msg )
 init =
     ( { position = 0
@@ -57,6 +52,11 @@ type Msg
     | Tick Time
     | TimeLimitReached Time
     | Toggle
+
+
+newPositionCmd : Cmd Msg
+newPositionCmd =
+    Random.generate NewPosition (Random.int 0 5)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
