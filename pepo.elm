@@ -3,6 +3,7 @@ module Main exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Random exposing (generate, int)
 import Time exposing (..)
 
 
@@ -39,6 +40,7 @@ type Msg
     = Toggle
     | AdjustInterval String
     | Tick Time
+    | NewPosition Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -57,9 +59,12 @@ update msg model =
 
         Tick time ->
             if model.active then
-                ( { model | position = (model.position + 1) % 6 }, Cmd.none )
+                ( model, Random.generate NewPosition (Random.int 0 5) )
             else
                 ( model, Cmd.none )
+
+        NewPosition pos ->
+            ( { model | position = pos }, Cmd.none )
 
 
 

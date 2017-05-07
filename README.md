@@ -36,7 +36,6 @@ interval of time passes and the next position is called out.
 ## TODO
 
 Possible future features:
-- instead of cycling through the numbers 0-5, choose randomly
 - instead of representing positions as six integers, allow user to specify points
   on a faux-squash court, add/remove to have more/less than six
 - fixed time limit (e.g. Give me random positions every 2 seconds but stop
