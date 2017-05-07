@@ -25,6 +25,7 @@ main =
 type alias Model =
     { position : Int
     , interval : Float
+    , timeLimit : Int
     , active : Bool
     }
 
@@ -36,7 +37,13 @@ newPositionCmd =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { position = 0, interval = 5.0, active = False }, Cmd.none )
+    ( { position = 0
+      , interval = 5.0
+      , timeLimit = 0
+      , active = False
+      }
+    , Cmd.none
+    )
 
 
 
@@ -46,7 +53,9 @@ init =
 type Msg
     = Toggle
     | AdjustInterval String
+    | AdjustTimeLimit String
     | Tick Time
+    | TimeLimitReached Time
     | NewPosition Int
 
 
@@ -64,7 +73,15 @@ update msg model =
                 Err errMsg ->
                     ( model, Cmd.none )
 
-        Tick time ->
+        AdjustTimeLimit stringVal ->
+            case String.toInt stringVal of
+                Ok value ->
+                    ( { model | timeLimit = value }, Cmd.none )
+
+                Err errMsg ->
+                    ( model, Cmd.none )
+
+        Tick _ ->
             if model.active then
                 ( model, newPositionCmd )
             else
@@ -73,6 +90,9 @@ update msg model =
         NewPosition pos ->
             ( { model | position = pos }, Cmd.none )
 
+        TimeLimitReached _ ->
+            ( { model | active = False }, Cmd.none )
+
 
 
 -- Subscriptions
@@ -80,10 +100,23 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    if model.active then
-        every (second * model.interval) Tick
-    else
-        Sub.none
+    let
+        intervalSub =
+            if model.active then
+                every (second * model.interval) Tick
+            else
+                Sub.none
+
+        timeLimitSub =
+            if model.active && model.timeLimit > 0 then
+                every (second * toFloat model.timeLimit) TimeLimitReached
+            else
+                Sub.none
+    in
+        Sub.batch
+            [ intervalSub
+            , timeLimitSub
+            ]
 
 
 
@@ -120,7 +153,7 @@ renderIntervalControl model =
     div
         [ controlStyle
         , Html.Attributes.style
-            [ ( "width", "25vw" )
+            [ ( "width", "15vw" )
             , ( "text-align", "center" )
             ]
         ]
@@ -131,11 +164,58 @@ renderIntervalControl model =
             , value (toString model.interval)
             , step "0.1"
             , onInput AdjustInterval
-            , Html.Attributes.style [ ( "width", "25vw" ) ]
+            , Html.Attributes.style [ ( "width", "15vw" ) ]
             ]
             []
         , Html.text (toString model.interval ++ "s per position")
         ]
+
+
+renderTimeLimitControl : Model -> Html Msg
+renderTimeLimitControl model =
+    let
+        suggestionListId =
+            "time-limit-suggestions"
+
+        suggestionList =
+            datalist
+                [ Html.Attributes.id suggestionListId ]
+                [ option [ value "0" ] []
+                , option [ value "30" ] []
+                , option [ value "60" ] []
+                , option [ value "90" ] []
+                , option [ value "120" ] []
+                ]
+
+        timeLimitString =
+            if model.timeLimit > 0 then
+                (toString model.timeLimit) ++ "s time limit"
+            else
+                "No time limit"
+    in
+        div
+            [ controlStyle
+            , Html.Attributes.style
+                [ ( "width", "10vw" )
+                , ( "text-align", "center" )
+                ]
+            ]
+            (if model.active then
+                [ Html.text timeLimitString ]
+             else
+                [ suggestionList
+                , input
+                    [ Html.Attributes.type_ "number"
+                    , value (toString model.timeLimit)
+                    , placeholder "seconds"
+                    , onInput AdjustTimeLimit
+                    , Html.Attributes.style [ ( "width", "10vw" ) ]
+                    , list suggestionListId
+                    ]
+                    []
+                , Html.text " time limit (s)"
+                ]
+            )
 
 
 renderControls : Model -> Html Msg
@@ -155,6 +235,7 @@ renderControls model =
         [ renderToggleControl model
         , flexboxSpacer "30%"
         , renderIntervalControl model
+        , renderTimeLimitControl model
         ]
 
 
