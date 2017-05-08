@@ -23,14 +23,20 @@ interval of time passes and the next position is called out.
 
 ## Using pepo
 
+Easiest way, just go to https://jonprindiville.github.io/pepo/ (and hopefully
+I'll keep it updated...)
+
+... slightly more work:
+
 1. Clone/download this repo
 1. [Install elm-lang](https://guide.elm-lang.org/install.html)
-1. Navigate into the ``pepo`` directory
+1. Navigate into the repo directory
 1. ``elm-make --yes pepo.elm``
 1. Open the generated ``index.html`` in a browser (or take that ``index.html``
    with you to the squash court on your old laptop or phone or something)
-1. Select a time interval on the slider
-1. Press start and position numbers will begin appearing at the interval you've selected
+1. Maybe adjust the time interval or choose a time limit.
+1. Press start and position numbers will begin appearing at the interval you've
+   selected.
 
 
 ## TODO
