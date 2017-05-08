@@ -1,6 +1,6 @@
 # pepo
 
-Just an elm-lang demo for my Dad
+Just an [elm-lang](http://elm-lang.org/) demo for my Dad
 
 
 ## What is it, though?
@@ -23,10 +23,8 @@ interval of time passes and the next position is called out.
 
 ## Using pepo
 
-Easiest way, just go to https://jonprindiville.github.io/pepo/ (and hopefully
-I'll keep it updated...)
-
-... slightly more work:
+Just go to https://jonprindiville.github.io/pepo/ (hopefully
+I'll keep it updated) or if you want slightly more work:
 
 1. Clone/download this repo
 1. [Install elm-lang](https://guide.elm-lang.org/install.html)
